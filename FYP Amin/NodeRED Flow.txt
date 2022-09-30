@@ -1,0 +1,183 @@
+[
+    {
+        "id": "d7053dc0f7ee2375",
+        "type": "tab",
+        "label": "Water Quality Monitor",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "e9cebaf7ec15d4c6",
+        "type": "mqtt in",
+        "z": "d7053dc0f7ee2375",
+        "name": "BME280",
+        "topic": "KingAPK-FinalProject/DATA",
+        "qos": "2",
+        "datatype": "auto",
+        "broker": "1fb61b305b74c3b5",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 120,
+        "y": 260,
+        "wires": [
+            [
+                "61af898365eafaba"
+            ]
+        ]
+    },
+    {
+        "id": "61af898365eafaba",
+        "type": "json",
+        "z": "d7053dc0f7ee2375",
+        "name": "Convert To JSON",
+        "property": "payload",
+        "action": "",
+        "pretty": false,
+        "x": 370,
+        "y": 260,
+        "wires": [
+            [
+                "8907b6c187b3b174"
+            ]
+        ]
+    },
+    {
+        "id": "168655e38b74ca28",
+        "type": "influxdb out",
+        "z": "d7053dc0f7ee2375",
+        "influxdb": "60d9ce4df2d66955",
+        "name": "InfluxDB Database",
+        "measurement": "Water_Quality",
+        "precision": "",
+        "retentionPolicy": "",
+        "database": "database",
+        "precisionV18FluxV20": "ms",
+        "retentionPolicyV18Flux": "",
+        "org": "organisation",
+        "bucket": "bucket",
+        "x": 950,
+        "y": 340,
+        "wires": []
+    },
+    {
+        "id": "8907b6c187b3b174",
+        "type": "function",
+        "z": "d7053dc0f7ee2375",
+        "name": "Whiole Parameter",
+        "func": "var sensor = msg.payload; //put only the VALUE in payload\n\nmsg.payload = \n{\n    pH: msg.payload.pH,\n    Turbidity: msg.payload.Turbidity,\n    Temperature: msg.payload.WaterTemp,\n}\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 650,
+        "y": 260,
+        "wires": [
+            [
+                "92f9075f571f2d3d",
+                "168655e38b74ca28"
+            ]
+        ]
+    },
+    {
+        "id": "92f9075f571f2d3d",
+        "type": "http request",
+        "z": "d7053dc0f7ee2375",
+        "name": "Firebase RTDB",
+        "method": "PUT",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "https://water-quality-monitoring-d3136-default-rtdb.asia-southeast1.firebasedatabase.app/sensor.json",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "authType": "",
+        "senderr": false,
+        "x": 940,
+        "y": 260,
+        "wires": [
+            [
+                "9ae29fa8d70b580a"
+            ]
+        ]
+    },
+    {
+        "id": "9ae29fa8d70b580a",
+        "type": "debug",
+        "z": "d7053dc0f7ee2375",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1150,
+        "y": 260,
+        "wires": []
+    },
+    {
+        "id": "b7866a3ad699f268",
+        "type": "ui_spacer",
+        "z": "d7053dc0f7ee2375",
+        "name": "spacer",
+        "group": "61285987.c20328",
+        "order": 4,
+        "width": 1,
+        "height": 1
+    },
+    {
+        "id": "a85c4dcbad067944",
+        "type": "ui_spacer",
+        "z": "d7053dc0f7ee2375",
+        "name": "spacer",
+        "group": "61285987.c20328",
+        "order": 4,
+        "width": 1,
+        "height": 1
+    },
+    {
+        "id": "1fb61b305b74c3b5",
+        "type": "mqtt-broker",
+        "name": "",
+        "broker": "test.mosquitto.org",
+        "port": "1883",
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": "4",
+        "keepalive": "60",
+        "cleansession": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": "",
+        "willMsg": {},
+        "sessionExpiry": ""
+    },
+    {
+        "id": "60d9ce4df2d66955",
+        "type": "influxdb",
+        "hostname": "127.0.0.1",
+        "port": "8086",
+        "protocol": "http",
+        "database": "Water_Monitoring",
+        "name": "",
+        "usetls": false,
+        "tls": "",
+        "influxdbVersion": "1.x",
+        "url": "http://localhost:8086",
+        "rejectUnauthorized": true
+    }
+]
